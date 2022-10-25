@@ -1,0 +1,21 @@
+#!/bin/bash
+
+echo -n "Ingresa la intensidad [5,9]: "
+read number
+#Me dio pereza buscar como manejar decimales
+intensidad="0.$number"
+
+if [ $number -ge 5 -a $number -le 9 ]; then
+    name=`xrandr --prop | grep " connected" | cut -d " " -f 1`
+    #Se guardo como entero y quedo como cero
+    #(( number=$number/10 ))
+    xrandr --output $name --brightness $intensidad
+else
+    echo "ERROR. Valor fuera de rango"
+    exit 1
+fi
+
+exit 0
+
+
+

@@ -1,0 +1,98 @@
+#!/bin/bash
+
+# Variables
+e=0
+option=$1
+pr="/home/yarso/Escritorio/C#Apps/" # My directory to save it (personal)
+
+# Detect & Show Projects - Function
+function show_projects(){
+    for p in `ls $pr`; do
+        if [ -d $pr$p/"bin" ]; then
+            if [ $e -eq 0 ]; then
+                echo -e "\nThere are your projects: \n"
+            fi
+            echo $p
+            (( e+=1 ))
+        fi
+    done
+    if [ $e -eq 0 ]; then
+        error "\nERROR. Nothing here, i think you dont have projects"
+    fi
+}
+
+# Action - Function ?? -note. upgrade to the name 
+function action(){
+    if [ $e -gt 0 ]; then
+        echo -e -n "\nProject name: "
+        read name
+        if [[ $1 == "del" ]]; then
+            if [ ! -d $pr$name ]; then 
+                error "\nERROR. That's only in your mind"
+            else
+                sudo rm -r $pr$name
+                success "\nSUCCESS. Operation finished"
+            fi
+        elif [[ $1 == "op" ]]; then
+            if [ ! -d $pr$name ]; then 
+                error "\nERROR. That's only in your mind"
+            else
+                code $pr$name
+                success "\nSUCCESS. Operation finished"
+            fi
+        fi
+    else
+        # This isnt possible, but we will let them right here
+        echo $name
+        error "\nERROR. Nothing here, i think you dont have projects"
+    fi
+}
+
+# Error - Function
+function error(){
+    echo -e $1
+    
+    exit 1
+
+}
+
+# Success - Function
+function success(){
+    echo -e $1
+
+    exit 0 
+
+}
+
+
+if [ $# -lt 1 ]; then
+    error "\nERROR. Arguments are missing (-crP, -delP, -oP)(P = project)"
+fi
+
+if [[ $option != "-crP" && $option != "-delP" && $option != "-oP" ]]; then
+    error "\nCongrats, you are retarded. Bay bay"
+fi
+
+# Create Project
+if [[ $option == "-crP" ]]; then
+    echo -n "New project name: "
+    read name
+    if [ -d $pr$name ]; then
+        error "\nERROR. Directory already exist"
+    else
+        mkdir $pr$name
+        cd $pr$name && dotnet new console
+        code $pr$name
+        success "\nSUCCESS. Operation finished"
+    fi
+        
+# Delete Project
+elif [[ $option == "-delP" ]]; then
+    show_projects 
+    action "del"
+
+# Open Project
+elif [[ $option == "-oP" ]]; then
+    show_projects
+    action "op"
+fi
