@@ -24,7 +24,7 @@ function show_projects(){
 # Action - Function ?? -note. upgrade to the project_name 
 function action(){
     if [ $e -gt 0 ]; then
-        echo -e -n "\nProject project_name: "
+        echo -e -n "\nProject name: "
         read project_name
         if [[ $1 == "del" ]]; then
             if [ ! -d $projects_path$project_name ]; then 
@@ -75,7 +75,7 @@ fi
 
 # Create Project
 if [[ $option_selected == "-crP" ]]; then
-    echo -n "New project project_name: "
+    echo -n "New project name: "
     read project_name
     if [ -d $projects_path$project_name ]; then
         error "\nERROR. Directory already exist"
