@@ -2,17 +2,17 @@
 
 # Variables
 e=0
-option=$1
-pr="/home/yarso/Escritorio/C#Apps/" # My directory to save it (personal)
+option_selected=$1
+projects_path="/home/yarso/Escritorio/C#Apps/" # My directory to save it (personal)
 
 # Detect & Show Projects - Function
 function show_projects(){
-    for p in `ls $pr`; do
-        if [ -d $pr$p/"bin" ]; then
+    for project in `ls $projects_path`; do
+        if [ -d $projects_path$project/"bin" ]; then
             if [ $e -eq 0 ]; then
                 echo -e "\nThere are your projects: \n"
             fi
-            echo $p
+            echo $project
             (( e+=1 ))
         fi
     done
@@ -21,29 +21,29 @@ function show_projects(){
     fi
 }
 
-# Action - Function ?? -note. upgrade to the name 
+# Action - Function ?? -note. upgrade to the project_name 
 function action(){
     if [ $e -gt 0 ]; then
-        echo -e -n "\nProject name: "
-        read name
+        echo -e -n "\nProject project_name: "
+        read project_name
         if [[ $1 == "del" ]]; then
-            if [ ! -d $pr$name ]; then 
+            if [ ! -d $projects_path$project_name ]; then 
                 error "\nERROR. That's only in your mind"
             else
-                sudo rm -r $pr$name
+                sudo rm -r $projects_path$project_name
                 success "\nSUCCESS. Operation finished"
             fi
         elif [[ $1 == "op" ]]; then
-            if [ ! -d $pr$name ]; then 
+            if [ ! -d $projects_path$project_name ]; then 
                 error "\nERROR. That's only in your mind"
             else
-                code $pr$name
+                code $projects_path$project_name
                 success "\nSUCCESS. Operation finished"
             fi
         fi
     else
         # This isnt possible, but we will let them right here
-        echo $name
+        echo $project_name
         error "\nERROR. Nothing here, i think you dont have projects"
     fi
 }
@@ -69,30 +69,30 @@ if [ $# -lt 1 ]; then
     error "\nERROR. Arguments are missing (-crP, -delP, -oP)(P = project)"
 fi
 
-if [[ $option != "-crP" && $option != "-delP" && $option != "-oP" ]]; then
+if [[ $option_selected != "-crP" && $option_selected != "-delP" && $option_selected != "-oP" ]]; then
     error "\nCongrats, you are retarded. Bay bay"
 fi
 
 # Create Project
-if [[ $option == "-crP" ]]; then
-    echo -n "New project name: "
-    read name
-    if [ -d $pr$name ]; then
+if [[ $option_selected == "-crP" ]]; then
+    echo -n "New project project_name: "
+    read project_name
+    if [ -d $projects_path$project_name ]; then
         error "\nERROR. Directory already exist"
     else
-        mkdir $pr$name
-        cd $pr$name && dotnet new console
-        code $pr$name
+        mkdir $projects_path$project_name
+        cd $projects_path$project_name && dotnet new console
+        code $projects_path$project_name
         success "\nSUCCESS. Operation finished"
     fi
         
 # Delete Project
-elif [[ $option == "-delP" ]]; then
+elif [[ $option_selected == "-delP" ]]; then
     show_projects 
     action "del"
 
 # Open Project
-elif [[ $option == "-oP" ]]; then
+elif [[ $option_selected == "-oP" ]]; then
     show_projects
     action "op"
 fi
